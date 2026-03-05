@@ -1,0 +1,11 @@
+[build]
+builder = "dockerfile"
+dockerfilePath = "./Dockerfile"
+
+[deploy]
+startCommand = "./pixel_board_api"
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+healthcheckPath = "/board/stats"
+healthcheckTimeout = 30
+numReplicas = 1
