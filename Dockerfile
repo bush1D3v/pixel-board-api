@@ -4,10 +4,10 @@ WORKDIR /app
 
 COPY Cargo.toml Cargo.lock ./
 RUN mkdir src && echo "fn main() {}" > src/main.rs
-RUN cargo fetch
+RUN cargo fetch --locked
 
 COPY src/ ./src/
-RUN cargo build --release
+RUN cargo build --release --locked
 
 # ─── Runtime ───
 FROM debian:trixie-slim
