@@ -7,6 +7,7 @@ RUN mkdir src && echo "fn main() {}" > src/main.rs
 RUN cargo fetch --locked
 
 COPY src/ ./src/
+COPY migrations/ ./migrations/
 RUN cargo build --release --locked
 
 # ─── Runtime ───
