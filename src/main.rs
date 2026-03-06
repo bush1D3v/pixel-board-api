@@ -1,11 +1,9 @@
-use actix_web::{web, App, HttpServer};
+use actix_web::{App, HttpServer, web};
 use config::{api_doc::api_doc, cors::cors};
-use infra::{postgres::Postgres, redis::Redis, storage::Storage};
+use infra::{migrations::run_migrations, postgres::Postgres, redis::Redis, storage::Storage};
 use modules::{
-    block::block_controllers::block_routes,
-    board::board_controllers::board_routes,
-    upload::upload_controllers::upload_routes,
-    user::user_controllers::user_routes,
+    block::block_controllers::block_routes, board::board_controllers::board_routes,
+    upload::upload_controllers::upload_routes, user::user_controllers::user_routes,
 };
 use std::{env, net::Ipv4Addr};
 
@@ -22,6 +20,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     dotenv::dotenv().ok();
 
     let postgres_pool = Postgres::pool();
+
+    // Run SQL migrations before serving requests.
+    run_migrations(&postgres_pool).await?;
+
     let redis_pool = Redis::pool().await;
 
     // MinIO / S3 client
